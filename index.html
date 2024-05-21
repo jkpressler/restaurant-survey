@@ -156,17 +156,31 @@
         const rating = document.getElementById("rating").value;
         const feedback = document.getElementById("feedback").value;
 
-        // Create a CSV content
-        const csvContent = `Location Name,Latitude,Longitude,Rating,Feedback\n"${locationName}","${lat}","${lng}","${rating}","${feedback}"\n`;
+        const data = {
+            locationName,
+            latitude: lat,
+            longitude: lng,
+            rating,
+            feedback
+        };
 
-        // Create a Blob object and initiate a download
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = 'selected_location.csv';
-        link.click();
+        // Send data to Firebase
+        firebase.database().ref('locations').push(data)
+            .then(() => {
+                alert('Location data saved successfully!');
+            })
+            .catch((error) => {
+                console.error('Error saving data:', error);
+            });
     }
 </script>
+
+<!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuG55J80PBfyvQJhKl694aW_K_HhqkiNc&libraries=places&callback=initMap" async defer></script>
+
+<!-- Include Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
 
 <script type="module">
     // Import the functions you need from the SDKs you need
@@ -191,10 +205,6 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
   </script>
-
-<!-- Replace YOUR_API_KEY with your actual Google Maps API key -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuG55J80PBfyvQJhKl694aW_K_HhqkiNc&libraries=places&callback=initMap" async defer></script>
-
 
 </body>
 </html>
